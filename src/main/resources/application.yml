@@ -1,0 +1,42 @@
+server:
+  port: 8443
+  ssl:
+    enabled: true
+    key-store: classpath:keystore/dev-keystore.p12
+    key-store-type: PKCS12
+    key-store-password: ${SSL_KEY_STORE_PASSWORD:dev-local-changeit}
+    key-alias: backend-tls
+    enabled-protocols: TLSv1.2,TLSv1.3
+  error:
+    include-message: always
+    include-binding-errors: always
+    whitelabel:
+      enabled: false
+
+app:
+  http:
+    port: 8080
+  jwt:
+    secret: ${JWT_SECRET:HU-SEC-001-dev-only-secret-key-32b!}
+    expiration: 60m
+    issuer: hu-sec-001-backend
+  cors:
+    allowed-origins:
+      - http://localhost:4200
+  users:
+    - username: user
+      password: ${APP_USER_PASSWORD:User123!}
+      roles:
+        - USER
+    - username: admin
+      password: ${APP_ADMIN_PASSWORD:Admin123!}
+      roles:
+        - ADMIN
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%logger] %msg%n"
+  level:
+    SECURITY.AUDIT: INFO
+    SECURITY.TLS: INFO
+    org.apache.tomcat.util.net.SecureNioChannel: DEBUG
